@@ -1,0 +1,1 @@
+- add option to choose browser

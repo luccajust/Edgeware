@@ -76,14 +76,14 @@ def checkTotal(root, a, b):
     if checkText(a, b):
         root.destroy()
 
+def jaccard_similarity(x,y):
+    intersection_cardinality = len(set.intersection(*[set(x), set(y)]))
+    union_cardinality = len(set.union(*[set(x), set(y)]))
+    return intersection_cardinality/float(union_cardinality)
+
 def checkText(a, b):
-    mistakes = 0
-    if len(a) != len(b):
-        mistakes += abs(len(a)-len(b))
-    for i in range(min(len(a), len(b))):
-        if a[i] != b[i]:
-            mistakes += 1
-    return mistakes <= maxMistakes
+    similarity = jaccard_similarity(a,b)
+    return similarity >= 1.0 - 0.033*maxMistakes
 
 try:
     unborderedWindow()

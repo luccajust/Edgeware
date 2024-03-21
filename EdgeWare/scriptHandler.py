@@ -11,6 +11,8 @@ SYS_ARGS = sys.argv
 
 PATH = os.curdir
 
+webbrowser.register('firefox', None, webbrowser.BackgroundBrowser("C:\\Program Files\\Mozilla Firefox\\firefox.exe"),preferred=True)
+
 class ScriptHandler:
     def __init__(self, script_name):
         self.bookmarks = dict[str, int]({})

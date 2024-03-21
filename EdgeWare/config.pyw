@@ -17,6 +17,8 @@ from tkinter import Tk, ttk, simpledialog, messagebox, filedialog, IntVar, Boole
 PATH = f'{str(pathlib.Path(__file__).parent.absolute())}\\'
 os.chdir(PATH)
 
+webbrowser.register('firefox', None, webbrowser.BackgroundBrowser("C:\\Program Files\\Mozilla Firefox\\firefox.exe"),preferred=True)
+
 #starting logging
 if not os.path.exists(os.path.join(PATH, 'logs')):
     os.mkdir(os.path.join(PATH, 'logs'))

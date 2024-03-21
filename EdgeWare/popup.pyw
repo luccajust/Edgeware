@@ -17,6 +17,8 @@ from PIL import Image, ImageTk, ImageFilter
 SYS_ARGS = sys.argv.copy()
 SYS_ARGS.pop(0)
 
+webbrowser.register('firefox', None, webbrowser.BackgroundBrowser("C:\\Program Files\\Mozilla Firefox\\firefox.exe"),preferred=True)
+
 #Start Imported Code
 #Code from: https://code.activestate.com/recipes/460509-get-the-actual-and-usable-sizes-of-all-the-monitor/
 user = ctypes.windll.user32
@@ -287,7 +289,7 @@ def run():
         size_source = max(img.width, img.height) / min(screen_width, screen_height)
         size_target = rand.randint(30, 70) / 100 if not LOWKEY_MODE else rand.randint(20, 50) / 100
         resize_factor = size_target / size_source
-        return image.resize((int(image.width * resize_factor), int(image.height * resize_factor)), Image.ANTIALIAS)
+        return image.resize((int(image.width * resize_factor), int(image.height * resize_factor)), Image.LANCZOS)
 
     resized_image = resize(image)
 
