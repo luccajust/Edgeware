@@ -5,5 +5,6 @@ if exist hid_time.dat (
     echo Nice try cutie~
     pause
 ) else (
-    taskkill /F /IM pythonw.exe
+    taskkill /F /IM pythonw3.11.exe
+    pause
 )
