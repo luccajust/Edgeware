@@ -1,8 +1,8 @@
-from multiprocessing import Process
+from multiprocessing import Process, active_children
 from threading import Thread
 from time import sleep
 from tkinter import Tk
-from typing import List
+from typing import Callable, List
 from config import Configuration
 from random import uniform
 from prompt import Prompt
@@ -19,21 +19,17 @@ class Edgeware:
         """Constructor of the main Edgeware class"""
         self.configuration: Configuration = Configuration.load_configuration()
         self.configuration.load_jsons()
-        self.children: List[Process] = []
-        self.root = Tk()
-        self.root.withdraw()
-        Thread(target=self.start()).start()
-        self.root.mainloop()
+        self.start()
         
     
-    def random_event(self) -> callable:
+    def random_event(self) -> Callable:
         print("Calling random event...")
         probabilities = {
-            audio: self.configuration.audiomod / 100,
-            self.popup: self.configuration.popupmod / 100,
-            self.prompt: self.configuration.promptmod / 100,
-            self.vid: self.configuration.vidmod / 100,
-            self.web: self.configuration.webmod / 100,
+            audio: 0,
+            self.popup: 1,
+            self.prompt: 0,
+            self.vid: 0,
+            self.web: 0,
         }
         total_probability = sum(probabilities.values())
         random_num = uniform(0, total_probability)
@@ -45,9 +41,9 @@ class Edgeware:
 
     def popup(self):
         """Creates Popup with an Image or a Gif"""
-        if len(self.children) > 20: return # CAP AT 20 TODO: Change to config
-        thread = Thread(target=Image, args=(self,))
-        self.children.append(thread)
+        children = active_children()
+        if len(children) > 20: return # CAP AT 20 TODO: Change to config
+        thread = Process(target=Image, args=(self.configuration,))
         thread.start()
 
     def web(self):
@@ -59,30 +55,31 @@ class Edgeware:
         Prompt(self)
 
     def vid(self):
-        if len(self.children) > 20: return # CAP AT 20 TODO: Change to config
-        proc = Process(target=Video, args=(self,))
-        self.children.append(proc)
+        children = active_children()
+        if len(children) > 20: return # CAP AT 20 TODO: Change to config
+        proc = Process(target=Video, args=(self.configuration,))
         proc.start()
 
     def panic(self):
         """Currently unused"""
-        for i in self.children:
-            i.terminate()
-
-    def update_children(self):
-        for i in self.children:
-            if not i.is_alive():
-                self.children.remove(i)
+        active = active_children()
+        for child in active:
+            child.kill()
+        for child in active:
+            child.join()
+        
 
     def start(self):
-        while True:
-            self.update_children()
-            sleep(self.configuration.delay/1000)
-            event = self.random_event()
-            event()
-            
+        try:
+            while True:
+                sleep(self.configuration.delay/1000)
+                event = self.random_event()
+                event()
+        except KeyboardInterrupt:
+            print("Panic! Exiting...")
+            self.panic()
+            print("Done!")
 
 
 if __name__ == "__main__":
     main = Edgeware()
-    print("Staring...")

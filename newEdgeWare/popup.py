@@ -116,10 +116,10 @@ class GifLabel(tk.Label):
 
 
 class Image:
-    def __init__(self, root: 'Edgeware') -> None:
-        self.configuration = root.configuration
+    def __init__(self, config: Configuration) -> None:
+        self.configuration = config
         self.opacity = 100
-        self.root = root.root
+        self.root = Tk()
         self.root.bind("<KeyPress>", lambda key: self.panic_handler(key))
         self.root.configure(bg="black")
         self.root.overrideredirect(1)
